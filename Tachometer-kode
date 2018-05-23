@@ -1,0 +1,35 @@
+int tachoPin = 2; //Pin til tacho pin
+int vcc = 4; //Pin til strøm på tachometeret
+int gnd = 3; //Pin til ground på tachometeret
+int motor = 10; //Pin til motoren
+int val;  //læst tal fra tachometer
+int taeller = 0; //Tæller ændringer 0 og 1
+int omgange = 0; // Tæller omgange
+int sidsteTal = 0; // Sidste læste værdi
+
+void setup() {
+  Serial.begin(9600);  
+  pinMode(motor, OUTPUT);  
+  pinMode(gnd, OUTPUT);
+  pinMode(vcc, OUTPUT);
+  digitalWrite(vcc, HIGH);
+  digitalWrite(gnd, LOW);
+  analogWrite(motor, YY); //Indtast hastighed
+
+void loop() {
+  val = digitalRead(tachoPin);
+  if (val != sidsteTal) {
+   taeller++;
+   if (taeller == 40)
+   {
+    omgange++ ; 
+    Serial.println(omgange);
+    taeller = 0 ; 
+   }
+   while (omgange == 50)//Stopper programmet når 50 omgange er opnået
+   {
+   analogWrite(motor, 0);
+   }
+  }
+  sidsteTal = val;
+}
